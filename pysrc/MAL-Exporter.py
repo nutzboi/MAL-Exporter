@@ -133,12 +133,7 @@ def buildmyinfo(loadjson, lstype, lstypestr):
 
 def CD(s):
     s = str(s)
-    for i in range(len(s)):
-        if i-2 > -1 and s[i-2:i+1] == "]]>":
-            s = s[0:i] + "]]><![CDATA[>" + "" if i+1 < len(s) else s[i+1:]
-            i+=len("]]><![CDATA[>")-1
-            
-    return "<![CDATA[" + s + "]]>"
+    return "<![CDATA[" + s.replace("]]>", "]]]]><![CDATA[>") + "]]>"
 
 def json_to_xml(loadjson):
     
