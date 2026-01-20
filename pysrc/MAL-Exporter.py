@@ -250,7 +250,12 @@ def getdata(user, listtype="anime"):
     
 if __name__ == "__main__":
     outfile = "output.xml"
+    update_on_import = ("--update-on-import" in sys.argv) or (len(sys.argv) > 4 and (sys.argv[4].lower() in ["1", "true"]))
+    
     if len(sys.argv) >= 3 and ".json" in sys.argv[1]:
+        if(len(sys.argv) > 3):
+            update_on_import = update_on_import or (sys.argv[3].lower() in ["1", "true"])
+        
         with open(sys.argv[1], 'r', encoding="utf-8") as f:
             loadjson = json.load(f)
         
@@ -277,8 +282,9 @@ if __name__ == "__main__":
             f.write(xml)
         
     else:
-        print("Usage: " + sys.argv[0] + " mal_username [anime,manga] (output.xml)\n"
-            + "\t\tOR " + sys.argv[0] + " list.json list.xml\n"
+        scriptname = sys.argv[0].split('\\')[-1].split('/')[-1]
+        print("\nUsage: " + scriptname + " mal_username [anime|manga] (output.xml) (--update-on-import)\n"
+            + "   OR: " + scriptname + " list.json list.xml (--update-on-import)\n\n"
             + "[values]: argument takes one of the values, (value): optional argument.\n")
         exit()
     

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MAL List Exporter
 // @namespace    http://tampermonkey.net/
-// @version      2026-01-19
+// @version      2026-01-20
 // @description  Export any MyAnimeList.net list you have access to as XML.
 // @author       Nutzboie Funnimanne
 // @license      AGPL-3.0-only
@@ -270,6 +270,7 @@ const btntitle = "\n<span class=\"text\">Export</span>";
           console.error('Could not load load.json and no page variable found.');
           return;
       }
+      update_on_import = confirm("Enable update_on_import?");
       // Convert and either download the XML or log it to console
       const xmlOutput = jsonToXml(loadjson);
       // Create a download link and click it to save as load.xml

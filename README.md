@@ -9,9 +9,9 @@ ____
 - Parses and converts storage types and values
 - Supports any list you have access to via the userscript
 - Seamlessly inserts _Export_ button into list page
+- Prompts to enable `update_on_import` in exported list
 
 ## Planned Features:
-- Support `update_on_import` property
 - Support other platforms (AniList, Kitsu, etc.)
 - Website (in PHP, since MAL doesn't allow CORS)
 
