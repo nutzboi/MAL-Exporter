@@ -10,6 +10,7 @@ from dateutil import parser
 
 userid = 0
 username = "user"
+update_on_import = False
 
 dic = [
     { # anime
@@ -32,11 +33,11 @@ dic = [
             # "rewv": "my_rewatch_value",
             "pri": "my_priority",
             "tags": "my_tags",
-            "rew": "my_rewatching"
+            "rew": "my_rewatching",
             # my_rewatching_ep
             # my_discuss
             # my_sns
-            # update_on_import
+            "updimp": "update_on_import"
             },
         "j": { # json object names
             "id": "anime_id",
@@ -78,10 +79,10 @@ dic = [
             "tags": "my_tags",
             "pri": "my_priority",
             # "rewv": "my_reread_value",
-            "rew": "my_rereading"
+            "rew": "my_rereading",
             # my_discuss
             # my_sns
-            # update_on_import
+            "updimp": "update_on_import"
             },
         "j": {
             "id": "id",
@@ -153,7 +154,7 @@ def CD(s):
     return "<![CDATA[" + s.replace("]]>", "]]]]><![CDATA[>") + "]]>"
 
 def json_to_xml(loadjson):
-    
+    global update_on_import
     lstype = 0
     lstypestr = "anime"
     if "manga_id" in loadjson[0]:
@@ -193,7 +194,8 @@ def json_to_xml(loadjson):
                 newprop = {prop: propval}
             
             newlist[-1][lstypestr].update(newprop)
-        
+        newlist[-1][lstypestr]["updimp"] = str(int(update_on_import))
+    
     xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\t\t<myanimelist>\n\t\t\n"
     
     xml+= "\t\t\t<myinfo>\n"
