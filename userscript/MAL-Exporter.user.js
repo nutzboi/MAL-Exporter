@@ -201,16 +201,22 @@ const btntitle = "\n<span class=\"text\">Export</span>";
     }
     const newlist = [];
     for (const jsonentry of loadjsonArr) {
-      const obj = {}; obj[lstypestr] = {};
+      newlist.push({[lstypestr]: {}});
       for (const prop in dic[lstype].j) {
+        let obj = {};
         const jsonKey = dic[lstype].j[prop];
         let propval = jsonentry[jsonKey];
-        if (prop === "title" || prop === "notes" || prop === "tags") propval = CD(propval);
-        else if (prop === "pri") propval = propval ? String(propval).toUpperCase() : propval;
-        else if (prop.includes("date")) propval = formatDateToYMD(propval);
-        obj[lstypestr][prop] = propval;
+        if (prop === "title" || prop === "notes" || prop === "tags")
+          obj = {[prop]: CD(propval)};
+        else if (prop === "pri")
+          obj = {[prop]: String(propval).toUpperCase()};
+        else if (prop.includes("date"))
+          obj = {[prop]: formatDateToYMD(propval)};
+        else
+          obj = {[prop]: propval}
+
+        Object.assign(newlist[newlist.length - 1][lstypestr], obj);
       }
-      newlist.push(obj);
     }
 
     let xml = '<?xml version="1.0" encoding="UTF-8" ?>\n\t\t<myanimelist>\n\t\t\n';

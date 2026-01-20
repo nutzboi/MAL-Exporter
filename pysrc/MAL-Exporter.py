@@ -155,22 +155,25 @@ def json_to_xml(loadjson):
 
     for jsonentry in loadjson:
         newlist.append({lstypestr: {}});
+        newprop = {}
         
         for prop in dic[lstype]["j"]:
             propval = jsonentry[dic[lstype]["j"][prop]]
             # print("propval = " + str(propval))
             # print("prop = " + str(prop))
             if prop == "title" or prop == "notes" or prop == "tags":
-                propval = CD(propval)
+                newprop = {prop: CD(propval)}
             elif prop == "pri":
-                propval = propval.upper()
+                newprop = {prop: propval.upper()}
             elif "date" in prop:
                 if(propval == None):
-                    propval = "0000-00-00"
+                    newprop = {prop: "0000-00-00"}
                 else:
-                    propval = parser.parse(propval).isoformat().split("T")[0]
+                    newprop = {prop: parser.parse(propval).isoformat().split("T")[0]}
+            else:
+                newprop = {prop: propval}
             
-            newlist[-1][lstypestr][prop] = propval
+            newlist[-1][lstypestr].update(newprop)
         
     xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\t\t<myanimelist>\n\t\t\n"
     
