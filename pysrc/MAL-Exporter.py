@@ -106,6 +106,23 @@ dic = [
     }
 ]
 
+def parse_store(s):
+    store = {"store": "", "storev": "0.00"}
+    storedic = {
+        "RDVD": "Retail DVD",
+        "EHD": "External HD",
+        "VHS": "VHS",
+        "": "",
+        "HD":"Hard Drive",
+        "NAS": "NAS",
+        "DVD": "DVD / CD"
+    }
+    if s:
+        s = s.split(" ")
+        store["store"] = storedic[s[0]]
+        store["storev"] = s[1]+"0"
+    return store
+
 def buildmyinfo(loadjson, lstype, lstypestr):
     global userid, username
     
@@ -170,6 +187,8 @@ def json_to_xml(loadjson):
                     newprop = {prop: "0000-00-00"}
                 else:
                     newprop = {prop: parser.parse(propval).isoformat().split("T")[0]}
+            elif prop == "store":
+                newprop = parse_store(propval)
             else:
                 newprop = {prop: propval}
             

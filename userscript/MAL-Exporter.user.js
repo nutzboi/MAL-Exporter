@@ -193,6 +193,25 @@ const btntitle = "\n<span class=\"text\">Export</span>";
     const dd = d.getDate().toString().padStart(2,"0");
     return `${yyyy}-${mm}-${dd}`;
   }
+  
+  function parseStore(s) {
+    let store = {"store": "", "storev": "0.00"};
+    const storedic = {
+        "RDVD": "Retail DVD",
+        "EHD": "External HD",
+        "VHS": "VHS",
+        "": "",
+        "HD":"Hard Drive",
+        "NAS": "NAS",
+        "DVD": "DVD / CD"
+    };
+    if (s) {
+        s = s.split(" ");
+        store["store"] = storedic[s[0]];
+        store["storev"] = s[1]+"0";
+    }
+    return store;
+  }
 
   function jsonToXml(loadjsonArr = []) {
     let lstype = 0, lstypestr = "anime";
@@ -212,6 +231,8 @@ const btntitle = "\n<span class=\"text\">Export</span>";
           obj = {[prop]: String(propval).toUpperCase()};
         else if (prop.includes("date"))
           obj = {[prop]: formatDateToYMD(propval)};
+        else if (prop == "store")
+          obj = parseStore(propval);
         else
           obj = {[prop]: propval}
 

@@ -6,12 +6,12 @@ ____
 ## Current Features:
 - Export both anime and manga lists from MyAnimeList as XML
 - Properly handles [CDATA](https://en.wikipedia.org/wiki/CDATA)
+- Parses and converts storage types and values
 - Supports any list you have access to via the userscript
 - Seamlessly inserts _Export_ button into list page
 
 ## Planned Features:
 - Support `update_on_import` property
-- Parse and convert storage types and values
 - Support other platforms (AniList, Kitsu, etc.)
 - Website (in PHP, since MAL doesn't allow CORS)
 
