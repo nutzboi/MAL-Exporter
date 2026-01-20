@@ -247,32 +247,37 @@ def getdata(user, listtype="anime"):
     return loadjson
     
 if __name__ == "__main__":
+    outfile = "output.xml"
     if len(sys.argv) >= 3 and ".json" in sys.argv[1]:
-        with open(sys.argv[0], 'r', encoding="utf-8") as f:
+        with open(sys.argv[1], 'r', encoding="utf-8") as f:
             loadjson = json.load(f)
         
         xml = json_to_xml(loadjson)
         
-        with open(sys.argv[1], 'w', encoding="utf-8") as f:
+        outfile = sys.argv[2]
+        with open(outfile, 'w', encoding="utf-8") as f:
             f.write(xml)
         
-    elif len(sys.argv) >= 2 and sys.argv[1] == re.search("[\w-]{2,16}", sys.argv[1]).string:
+    elif len(sys.argv) >= 2 and sys.argv[1] == re.search("[\w-]{2,16}", sys.argv[1]).group():
         username = sys.argv[1]
         loadjson = getdata(username, sys.argv[2] if len(sys.argv) > 2 else "anime")
         if(not loadjson):
             exit()
-            
+        
         xml = json_to_xml(loadjson)
         
         if(len(sys.argv) > 2 and "xml" in sys.argv[3]):
-            with open(sys.argv[3], 'w', encoding="utf-8") as f:
-                f.write(xml)
+            outfile = sys.argv[3]
         else:
-            with open("output.xml", 'w', encoding="utf-8") as f:
-                f.write(xml)
+            outfile = username+".xml"
+        
+        with open(outfile, 'w', encoding="utf-8") as f:
+            f.write(xml)
+        
     else:
         print("Usage: " + sys.argv[0] + " mal_username [anime,manga] (output.xml)\n"
             + "\t\tOR " + sys.argv[0] + " list.json list.xml\n"
             + "[values]: argument takes one of the values, (value): optional argument.\n")
-        json_to_xml();
-    print("Converted to XML.")
+        exit()
+    
+    print(f"Exported to '{outfile}'.")
