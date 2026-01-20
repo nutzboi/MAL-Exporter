@@ -5,10 +5,10 @@ Free (as in "freedom") open-source MyAnimeList list exporter.
 ____
 ## Current Features:
 - Export both anime and manga lists from MyAnimeList as XML
-- Properly handles [CDATA](https://en.wikipedia.org/wiki/CDATA)
-- Parses and converts storage types and values
-- Supports any list you have access to via the userscript
 - Seamlessly inserts _Export_ button into list page
+- Supports any list you have access to via the userscript
+- Parses and converts storage types and values
+- Properly handles [CDATA](https://en.wikipedia.org/wiki/CDATA)
 - Prompts to enable `update_on_import` in exported list
 
 ## Planned Features:
