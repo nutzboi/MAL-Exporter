@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MAL List Exporter
 // @namespace    http://tampermonkey.net/
-// @version      2026-01-20
+// @version      2026-01-31
 // @description  Export any MyAnimeList.net list you have access to as XML.
 // @author       Nutzboie Funnimanne
 // @license      AGPL-3.0-only
@@ -219,6 +219,16 @@ const btntitle = "\n<span class=\"text\">Export</span>";
     if (loadjsonArr.length > 0 && Object.prototype.hasOwnProperty.call(loadjsonArr[0], "manga_id")) {
       lstype = 1; lstypestr = "manga";
     }
+
+    const st = {
+        0: "0",
+        1: (lstype?"Reading":"Watching"),
+        2: "Completed",
+        3: "On Hold",
+        4: "Dropped",
+        6: (lstype?"Plan to Read":"Plan to Watch")
+    };
+
     const newlist = [];
     for (const jsonentry of loadjsonArr) {
       newlist.push({[lstypestr]: {}});
@@ -234,6 +244,8 @@ const btntitle = "\n<span class=\"text\">Export</span>";
           obj = {[prop]: formatDateToYMD(propval)};
         else if (prop == "store")
           obj = parseStore(propval);
+        else if (prop == "stat")
+          obj = {[prop]: [st[[propval]]]};
         else
           obj = {[prop]: propval}
 

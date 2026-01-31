@@ -162,6 +162,7 @@ def json_to_xml(loadjson):
         lstypestr = "manga"
     
     st = {
+        0: "0",
         1: "Reading" if lstype else "Watching",
         2: "Completed",
         3: "On Hold",
@@ -190,6 +191,8 @@ def json_to_xml(loadjson):
                     newprop = {prop: parser.parse(propval).isoformat().split("T")[0]}
             elif prop == "store":
                 newprop = parse_store(propval)
+            elif prop == "stat":
+                newprop = {prop: st[propval]}
             else:
                 newprop = {prop: propval}
             
@@ -273,7 +276,7 @@ if __name__ == "__main__":
         
         xml = json_to_xml(loadjson)
         
-        if(len(sys.argv) > 2 and "xml" in sys.argv[3]):
+        if(len(sys.argv) > 3 and "xml" in sys.argv[3]):
             outfile = sys.argv[3]
         else:
             outfile = username+".xml"
