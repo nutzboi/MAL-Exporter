@@ -240,7 +240,7 @@ def getdata(user, listtype="anime"):
         offset = 300
         while True:
             r = requests.get("https://myanimelist.net/"+listtype+
-                "list/"+user+"/load.json?offset="+str(offset))
+                "list/"+user+"/load.json?status=7&offset="+str(offset))
             nextjson = r.json()
             if(not nextjson):
                 break # reached end of list.

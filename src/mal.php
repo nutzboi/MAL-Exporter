@@ -319,7 +319,7 @@ function getdata($user, $listtype = "anime") {
         if (!is_array($loadjson)) return null;
         $offset = 300;
         while (true) {
-            $nextUrl = $base . "?offset=" . $offset;
+            $nextUrl = $base . "?status=7&offset=" . $offset;
             $nextBody = curl_get($nextUrl, $c2);
             if ($c2 !== 200) break;
             $nextjson = json_decode($nextBody, true);

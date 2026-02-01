@@ -124,8 +124,8 @@ const btntitle = "\n<span class=\"text\">Export</span>";
             // Fetch additional pages (offsets of 300) until no more results
             let offset = 300;
             while (true) {
-                const pagedUrl = `${baseUrl}?offset=${offset}`;
-                const r = await fetch(pagedUrl, { credentials: "omit" });
+                const pagedUrl = `${baseUrl}?status=7&offset=${offset}`;
+                const r = await fetch(pagedUrl, { credentials: "include" });
                 if (!r.ok) break;
                 const nextJson = await r.json();
                 if (!nextJson || (Array.isArray(nextJson) && nextJson.length === 0)) break;
