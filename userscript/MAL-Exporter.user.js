@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MAL List Exporter
 // @namespace    http://tampermonkey.net/
-// @version      2026-01-31
+// @version      2026-02-01
 // @description  Export any MyAnimeList.net list you have access to as XML.
 // @author       Nutzboie Funnimanne
 // @license      AGPL-3.0-only
