@@ -3,12 +3,14 @@
 if(isset($_POST["type"]) && isset($_POST["user"])){
 	$type = $_POST["type"];
 	$user = $_POST["user"];
+	$update = ($_POST["update"]=="on"?1:0);
 	$success = 0;
 	$output = "";
 	try{
 		if(substr($type, 0, 3) == "mal"){
 			require_once "mal.php";
 			$username = $user;
+			$update_on_import = $update;
 			$loadjson = "";
 			if($type == "malmanga")
 				$loadjson = getdata($user, "manga");
