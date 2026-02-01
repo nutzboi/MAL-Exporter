@@ -224,7 +224,7 @@ const btntitle = "\n<span class=\"text\">Export</span>";
         0: "0",
         1: (lstype?"Reading":"Watching"),
         2: "Completed",
-        3: "On Hold",
+        3: "On-Hold",
         4: "Dropped",
         6: (lstype?"Plan to Read":"Plan to Watch")
     };

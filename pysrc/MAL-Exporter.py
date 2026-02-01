@@ -165,7 +165,7 @@ def json_to_xml(loadjson):
         0: "0",
         1: "Reading" if lstype else "Watching",
         2: "Completed",
-        3: "On Hold",
+        3: "On-Hold",
         4: "Dropped",
         6: "Plan to Read" if lstype else "Plan to Watch"
     }

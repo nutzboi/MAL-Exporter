@@ -185,14 +185,14 @@ function json_to_xml($loadjson) {
 		0 => "0",
         1 => "Reading",
         2 => "Completed",
-        3 => "On Hold",
+        3 => "On-Hold",
         4 => "Dropped",
         6 => "Plan to Read"
     ] : [
 		0 => "0",
         1 => "Watching",
         2 => "Completed",
-        3 => "On Hold",
+        3 => "On-Hold",
         4 => "Dropped",
         6 => "Plan to Watch"
     ];
