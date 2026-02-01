@@ -132,7 +132,7 @@ function buildmyinfo($loadjson, $lstype, $lstypestr) {
     foreach ($loadjson as $entry) {
         $stats[$entry[$dic[$lstype]["j"]["stat"]]]++;
     }
-	error_log(json_encode($stats));
+	
     $info = [
         "user_id" => $userid,
         "user_name" => $username,

@@ -3,7 +3,7 @@
 if(isset($_POST["type"]) && isset($_POST["user"])){
 	$type = $_POST["type"];
 	$user = trim($_POST["user"]);
-	$update = ($_POST["update"]=="on"?1:0);
+	$update = isset($_POST["update"]);
 	$success = 0;
 	$output = "";
 	try{
