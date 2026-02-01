@@ -272,6 +272,11 @@ function curl_get($url, &$http_code = null) {
 
 function getdata($user, $listtype = "anime") {
     global $userid;
+    if(!(preg_match("/[\w-]{2,16}/", $user, $matches) && $matches[0] == $user)){
+        echo "MAL usernames must be between 2 and 16 characters; and contain only letters, " .
+            "digits, underscores and hyphens." ;
+        return null;
+    }
     $profileUrl = "https://myanimelist.net/profile/" . rawurlencode($user);
     $html = curl_get($profileUrl, $code);
     if ($code !== 200 || $html === false) {
