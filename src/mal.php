@@ -170,10 +170,19 @@ function parse_date_iso($datestr) {
 
 function json_to_xml($loadjson) {
     global $update_on_import, $dic;
+	
+	if(gettype($loadjson) == "string"){
+		return $loadjson;
+	}
+	
     $lstype = 0;
     $lstypestr = "anime";
-    if (!is_array($loadjson) || count($loadjson) === 0) {
-        return "";
+	
+	if(!is_array($loadjson)){
+		return "e=";
+	}
+    if (count($loadjson) === 0) {
+        return "e=empty";
     }
     // detect manga by presence of "manga_id" in first element (Python used that)
     if (array_key_exists("manga_id", $loadjson[0])) {
@@ -273,15 +282,15 @@ function curl_get($url, &$http_code = null) {
 function getdata($user, $listtype = "anime") {
     global $userid;
     if(!(preg_match("/[\w-]{2,16}/", $user, $matches) && $matches[0] == $user)){
-        echo "MAL usernames must be between 2 and 16 characters; and contain only letters, " .
-            "digits, underscores and hyphens." ;
-        return null;
+        return "e=invalidmalname";
     }
     $profileUrl = "https://myanimelist.net/profile/" . rawurlencode($user);
     $html = curl_get($profileUrl, $code);
     if ($code !== 200 || $html === false) {
-        echo $code . " User does not exist.\n";
-        return null;
+		if($code == 404)
+			return "e=404user";
+		else
+			return "e=weirdmal&s={$code}";
     } else {
         // attempt to extract user id
         $needle = 'https://myanimelist.net/modules.php?go=report&amp;type=profile&amp;id=';
@@ -329,9 +338,6 @@ function getdata($user, $listtype = "anime") {
         }
         return $loadjson;
     } else {
-        echo "User's " . $listtype . " list is not public.\n<br>";
-		echo "Do you have access to it?
-		<b>Try the <a href=\"https://greasyfork.org/en/scripts/563051-mal-list-exporter\">userscript</a> instead!\n<br></b>";
-        return null;
+        return "e=notpublic";
     }
 }

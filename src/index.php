@@ -35,6 +35,12 @@
 			box-shadow: 0 4px 14px rgba(20,20,30,0.06);
 			background: #fff;
 		}
+		
+		.form-block p{
+			font-size: 90%;
+			max-width: 22em
+		}
+		
 		.form-row {
 			padding: 2px;
 			display: flex;
@@ -147,7 +153,9 @@
 		<span class="form-row">
 			<label for="update" style="font-size:90%">Enable <code>update_on_import</code> <input type="checkbox" name="update">
 		</span>
-		</form>
+		<?php require "export.php"; ?>
+		<script>let p = window.location.href; let pi = p.indexOf("?");
+				if(pi!==-1){ window.history.pushState({}, "", p.substr(0,pi)); }</script>
 	</div>
 	<br><br>
 	<footer><span style="font-size:110%">🌟 Like it? Star it on <a href="https://github.com/nutzboi/MAL-Exporter">GitHub</a>!</span><br><br><br>
