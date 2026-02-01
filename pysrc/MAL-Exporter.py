@@ -234,7 +234,7 @@ def getdata(user, listtype="anime"):
             print("Warning: Failed to extract user id.")
     
     
-    r = requests.get("https://myanimelist.net/"+listtype+"list/"+user+"/load.json");
+    r = requests.get("https://myanimelist.net/"+listtype+"list/"+user+"/load.json?status=7");
     if r.status_code == 200:
         loadjson = r.json()
         offset = 300

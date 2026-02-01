@@ -312,7 +312,7 @@ function getdata($user, $listtype = "anime") {
         }
     }
 
-    $base = "https://myanimelist.net/{$listtype}list/" . rawurlencode($user) . "/load.json";
+    $base = "https://myanimelist.net/{$listtype}list/" . rawurlencode($user) . "/load.json?status=7";
     $body = curl_get($base, $code2);
     if ($code2 === 200 && $body !== false) {
         $loadjson = json_decode($body, true);

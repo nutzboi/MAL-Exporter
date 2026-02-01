@@ -111,7 +111,7 @@ const btntitle = "\n<span class=\"text\">Export</span>";
             }
 
             // Fetch initial load.json
-            const baseUrl = `https://myanimelist.net/${listType}list/${encodeURIComponent(user)}/load.json`;
+            const baseUrl = `https://myanimelist.net/${listType}list/${encodeURIComponent(user)}/load.json?status=7`;
             let resp = await fetch(baseUrl, { credentials: "include" });
             if (!resp.ok) {
                 console.error(`User's ${listType} list is not public.`);
