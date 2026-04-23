@@ -8,8 +8,8 @@
 // @match        https://myanimelist.net/animelist/*
 // @match        https://myanimelist.net/mangalist/*
 // @homepage     https://github.com/nutzboi/MAL-Exporter
-// @downloadURL  https://raw.githubusercontent.com/nutzboi/MAL-Exporter/master/userscript/MAL-exporter.user.js
-// @updateURL    https://raw.githubusercontent.com/nutzboi/MAL-Exporter/master/userscript/MAL-exporter.user.js
+// @downloadURL  https://raw.githubusercontent.com/nutzboi/MAL-Exporter/master/userscript/MAL-Exporter.user.js
+// @updateURL    https://raw.githubusercontent.com/nutzboi/MAL-Exporter/master/userscript/MAL-Exporter.user.js
 // @icon         https://raw.githubusercontent.com/nutzboi/MAL-Exporter/master/favicon.png
 // @grant        none
 // ==/UserScript==
