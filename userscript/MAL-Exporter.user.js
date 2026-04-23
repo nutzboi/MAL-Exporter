@@ -338,6 +338,13 @@ const btntitle = "\n<span class=\"text\">Export</span>";
     var $menu = $('.list-menu-float').first();
     var $existing = $menu.length ? $menu.find('.export').first() : $();
 
+	if(!$menu.length){
+		// No .list-menu-float: create one.
+		$menu = $('<div/>', {
+          class: 'list-menu-float'
+		});
+		$('body').append($menu);
+	}
     if ($menu.length && $existing.length === 0) {
       // Insert button into .list-menu-float
       var $btn = createExportButton();
@@ -349,24 +356,6 @@ const btntitle = "\n<span class=\"text\">Export</span>";
         } else {
             $menu.append($btn);
         }
-    } else if (!$menu.length) {
-      // No .list-menu-float: add button to top-right of page.
-      // Attempt to place in a header-like container; fallback to body.
-      var $container = $('#content .header-right, .layout-main .header, header').first();
-      if ($container.length === 0) $container = $('body');
-
-      var $btn2 = createExportButton();
-      var $lmf = $('<div/>', {
-          class: 'list-menu-float'
-      }).append($btn2);
-      $btn2.css({
-        position: 'fixed',
-        top: '12px',
-        right: '12px',
-        zIndex: 9999
-      });
-      $btn2.on('click', runExport);
-      $container.append($lmf);
     }
   });
 })(jQuery);
