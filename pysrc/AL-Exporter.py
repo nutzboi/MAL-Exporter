@@ -164,6 +164,7 @@ def json_to_xml(loadjson):
                     anitype = "TV"
                 elif anitype in ["MOVIE", "SPECIAL", "MUSIC"]:
                     anitype = anitype.capitalize()
+                newprop = {prop: anitype}
             elif "date" in prop:
                 if(not propval["year"]):
                     newprop = {prop: "0000-00-00"}
