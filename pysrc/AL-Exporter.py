@@ -260,7 +260,8 @@ def getdata(user, listtype="ANIME"):
         return loadjson
     elif r.status_code >= 400 and r.status_code <= 499:
         try:
-            print("AniList Error: " + r.json()["errors"][0]["message"])
+            for i in r.json()["errors"]:
+                print("AniList Error: " + i["message"])
         except:
             print(f"AniList Error {r.status_code}.")
     elif r.status_code > 0:
