@@ -129,6 +129,7 @@ def json_to_xml(loadjson):
     global update_on_import
     global lstype, lstypestr
     
+    seen_ids = set()
     st = {
         "0": "0",
         "CURRENT": "Reading" if lstype else "Watching",
@@ -179,6 +180,12 @@ def json_to_xml(loadjson):
                     newprop = {prop: f"{year}-{month}-{day}"}
             elif prop == "stat":
                 newprop = {prop: st[propval]}
+            elif prop == "id":
+                if propval in seen_ids:
+                    break
+                else:
+                    seen_ids.add(propval)
+                    newprop = {prop: propval}
             else:
                 newprop = {prop: propval}
             
