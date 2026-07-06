@@ -129,6 +129,7 @@ def json_to_xml(loadjson):
     global update_on_import
     global lstype, lstypestr
     
+    lstypestr = lstypestr.lower()
     seen_ids = set()
     st = {
         "0": "0",
