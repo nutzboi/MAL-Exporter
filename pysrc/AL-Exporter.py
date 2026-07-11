@@ -130,7 +130,7 @@ def json_to_xml(loadjson):
     global lstype, lstypestr
     
     lstypestr = lstypestr.lower()
-    seen_ids = set()
+    seen_ids = {}
     st = {
         "0": "0",
         "CURRENT": "Reading" if lstype else "Watching",
@@ -143,8 +143,19 @@ def json_to_xml(loadjson):
     newlist = []
 
     for jsonentry in loadjson:
-        newlist.append({lstypestr: {}});
+        newlist.append({lstypestr: {"tags": ""}});
         newprop = {}
+        
+        if "tag" in jsonentry and len(jsonentry["tag"]):
+            if "tag" in jsonentry and len(jsonentry["tag"]):
+                tag = jsonentry["tag"].replace(", ", "\uff0c")
+                tag = tag.replace(",", "\uff0c")
+                if jsonentry["media"][dic[lstype]["j"]["id"]] in seen_ids:
+                    if len(newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]):
+                        newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]+=", "
+                    newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]+=tag
+                    continue
+                newlist[-1][lstypestr]["tags"]+=tag
         
         for prop in dic[lstype]["j"]:
             propval = None
@@ -185,7 +196,7 @@ def json_to_xml(loadjson):
                 if propval in seen_ids:
                     break
                 else:
-                    seen_ids.add(propval)
+                    seen_ids[propval] = len(newlist)-1
                     newprop = {prop: propval}
             else:
                 newprop = {prop: propval}
@@ -205,6 +216,8 @@ def json_to_xml(loadjson):
         xml+= "\t\t\t\t<" + lstypestr + ">\n"
         for prop in entry[lstypestr]:
             propval = entry[lstypestr][prop]
+            if prop == "tags":
+                propval = CD(propval)
             xml+= "\t\t\t\t\t<" + dic[lstype]["x"][prop] + ">" + str(propval) + "</" + dic[lstype]["x"][prop] + ">\n"
         xml+= "\t\t\t\t</" + lstypestr + ">\n\t\t\t\n"
     xml += "\n\t\t</myanimelist>\n"
@@ -222,6 +235,8 @@ def getdata(user, listtype="ANIME"):
         }
         MediaListCollection(userName: $username, type: $type) {
             lists {
+                isCustomList
+                name
                 entries {
                     status
                     score(format: POINT_10)
@@ -256,6 +271,9 @@ def getdata(user, listtype="ANIME"):
         username = r.json()["data"]["User"]["name"]
         loadjson = []
         for i in r.json()["data"]["MediaListCollection"]["lists"]:
+            if i["isCustomList"] == True:
+                for j in i["entries"]:
+                    j["tag"] = i["name"]
             loadjson+=i["entries"]
         return loadjson
     elif r.status_code >= 400 and r.status_code <= 499:

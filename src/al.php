@@ -138,8 +138,28 @@ function json_to_xml($loadjson): string {
     $newlist = [];
 
     foreach ($loadjson as $jsonentry) {
-        $newlist[] = [$lstypestr => []];
+        $newlist[] = [$lstypestr => ["tags" => ""]];
         $newprop = [];
+
+		if (isset($jsonentry["tag"]) && strlen($jsonentry["tag"]) > 0) {
+			$tag = str_replace(", ", "，", $jsonentry["tag"]);
+			$tag = str_replace(",", "，", $tag);
+
+			$mediaKey = $dic[$lstype]["j"]["id"];
+			$mediaId  = $jsonentry["media"][$mediaKey];
+
+			if (isset($seen_ids[$mediaId])) {
+				$seenIndex = $seen_ids[$mediaId];
+
+				if (!empty($newlist[$seenIndex][$lstypestr]["tags"])) {
+					$newlist[$seenIndex][$lstypestr]["tags"] .= ", ";
+				}
+				$newlist[$seenIndex][$lstypestr]["tags"] .= $tag;
+				continue;
+			}
+
+			$newlist[-1][$lstypestr]["tags"] .= $tag;
+		}
 
         foreach ($dic[$lstype]["j"] as $prop => $jsonKey) {
             if (in_array($prop, $mediaprops, true)) {
@@ -148,7 +168,7 @@ function json_to_xml($loadjson): string {
                 $propval = $jsonentry[$dic[$lstype]["j"][$prop]] ?? null;
             }
 
-            if ($prop === "title" || $prop === "notes" || $prop === "tags") {
+            if ($prop === "title" || $prop === "notes") {
                 if ($prop === "title") {
                     $propval = $propval["romaji"] ?? null;
                 }
@@ -185,7 +205,7 @@ function json_to_xml($loadjson): string {
                     $newprop = null;
                     break;
                 } else {
-                    if ($propval !== null) $seen_ids[$propval] = true;
+                    if ($propval !== null) $seen_ids[$propval] = count($newlist)-1;
                     $newprop = [$prop => $propval];
                 }
 
@@ -220,6 +240,9 @@ function json_to_xml($loadjson): string {
     foreach ($newlist as $entry) {
         $xml .= "\t\t\t\t<{$lstypestr}>\n";
         foreach ($entry[$lstypestr] as $prop => $propval) {
+			if($prop == "tags"){
+				$propval = CD($propval);
+			}
             $tag = $dic[$lstype]["x"][$prop];
             $xml .= "\t\t\t\t\t<{$tag}>{$propval}</{$tag}>\n";
         }
@@ -240,6 +263,8 @@ function getdata($user, $listtype = "ANIME") {
         }
         MediaListCollection(userName: \$username, type: \$type) {
             lists {
+				isCustomList
+				name
                 entries {
                     status
                     score(format: POINT_10)
@@ -289,6 +314,11 @@ function getdata($user, $listtype = "ANIME") {
         $username = $data["data"]["User"]["name"];
         $loadjson = [];
         foreach ($data["data"]["MediaListCollection"]["lists"] as $i) {
+			if($i["isCustomList"] === true){
+				for($j = 0; $j < count($i["entries"]); $j++){
+					$i["entries"][$j]["tag"] = $i["name"];
+				}
+			}
             $loadjson = array_merge($loadjson, $i["entries"] ?? []);
         }
         return $loadjson;
