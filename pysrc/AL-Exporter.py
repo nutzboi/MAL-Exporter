@@ -96,25 +96,25 @@ dic = [
     }
 ]
 
-def buildmyinfo(loadjson, lstype, lstypestr):
+def buildmyinfo(newlist, lstype, lstypestr):
     global userid, username
     
     st = {
-        "CURRENT": ["reading" if lstype else "watching", 1],
-        "COMPLETED": ["completed", 2],
-        "PAUSED": ["onhold", 3],
-        "DROPPED": ["dropped", 4],
-        "PLANNING": ["plantoread" if lstype else "plantowatch", 6]
+        "Reading" if lstype else "Watching": ["reading" if lstype else "watching", 1],
+        "Completed": ["completed", 2],
+        "On-Hold": ["onhold", 3],
+        "Dropped": ["dropped", 4],
+        "Plan to Read" if lstype else "Plan to Watch": ["plantoread" if lstype else "plantowatch", 6]
     }
     stats = [0,0,0,0,0,0,0]
-    for entry in loadjson:
-        stats[st[entry[dic[lstype]["j"]["stat"]]][1]]+=1
+    for entry in newlist:
+        stats[st[entry[lstypestr]["stat"]][1]]+=1
         
     info = {
         "user_id": "",
         "user_name": username,
         "user_export_type": lstype+1,
-        "user_total_"+lstypestr: len(loadjson),
+        "user_total_"+lstypestr: len(newlist),
     }
     for i in st:
         info["user_total_"+st[i][0]] = stats[st[i][1]]
@@ -135,6 +135,7 @@ def json_to_xml(loadjson):
         "0": "0",
         "CURRENT": "Reading" if lstype else "Watching",
         "COMPLETED": "Completed",
+        "REPEATING": "Completed",
         "PAUSED": "On-Hold",
         "DROPPED": "Dropped",
         "PLANNING": "Plan to Read" if lstype else "Plan to Watch"
@@ -147,15 +148,15 @@ def json_to_xml(loadjson):
         newprop = {}
         
         if "tag" in jsonentry and len(jsonentry["tag"]):
-            if "tag" in jsonentry and len(jsonentry["tag"]):
-                tag = jsonentry["tag"].replace(", ", "\uff0c")
-                tag = tag.replace(",", "\uff0c")
-                if jsonentry["media"][dic[lstype]["j"]["id"]] in seen_ids:
-                    if len(newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]):
-                        newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]+=", "
-                    newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]+=tag
-                    continue
-                newlist[-1][lstypestr]["tags"]+=tag
+            tag = jsonentry["tag"].replace(", ", "\uff0c")
+            tag = tag.replace(",", "\uff0c")
+            if jsonentry["media"][dic[lstype]["j"]["id"]] in seen_ids:
+                if len(newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]):
+                    newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]+=", "
+                newlist[seen_ids[jsonentry["media"][dic[lstype]["j"]["id"]]]][lstypestr]["tags"]+=tag
+                newlist.pop()
+                continue
+            newlist[-1][lstypestr]["tags"]+=tag
         
         for prop in dic[lstype]["j"]:
             propval = None
@@ -163,8 +164,7 @@ def json_to_xml(loadjson):
                 propval = jsonentry["media"][dic[lstype]["j"][prop]]
             else:
                 propval = jsonentry[dic[lstype]["j"][prop]]
-            # print("propval = " + str(propval))
-            # print("prop = " + str(prop))
+            
             if prop == "title" or prop == "notes" or prop == "tags":
                 if prop == "title":
                     propval = propval["romaji"]
@@ -191,6 +191,10 @@ def json_to_xml(loadjson):
                     
                     newprop = {prop: f"{year}-{month}-{day}"}
             elif prop == "stat":
+                if propval == "REPEATING":
+                    newlist[-1][lstypestr]["rew"] = 1
+                else:
+                    newlist[-1][lstypestr]["rew"] = 0
                 newprop = {prop: st[propval]}
             elif prop == "id":
                 if propval in seen_ids:
@@ -202,12 +206,15 @@ def json_to_xml(loadjson):
                 newprop = {prop: propval}
             
             newlist[-1][lstypestr].update(newprop)
-        newlist[-1][lstypestr]["updimp"] = str(int(update_on_import))
+        if "id" in newlist[-1][lstypestr]:
+            newlist[-1][lstypestr]["updimp"] = str(int(update_on_import))
+        else:
+            newlist.pop()
     
     xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\t\t<myanimelist>\n\t\t\n"
     
     xml+= "\t\t\t<myinfo>\n"
-    myinfo = buildmyinfo(loadjson, lstype, lstypestr)
+    myinfo = buildmyinfo(newlist, lstype, lstypestr)
     for prop in myinfo:
         xml+= "\t\t\t\t<" + prop + ">" + str(myinfo[prop]) + "</" + prop + ">\n"
     xml+= "\t\t\t</myinfo>\n\t\t\n\t\t\n"
@@ -221,8 +228,6 @@ def json_to_xml(loadjson):
             xml+= "\t\t\t\t\t<" + dic[lstype]["x"][prop] + ">" + str(propval) + "</" + dic[lstype]["x"][prop] + ">\n"
         xml+= "\t\t\t\t</" + lstypestr + ">\n\t\t\t\n"
     xml += "\n\t\t</myanimelist>\n"
-        
-    # print("hi")
     
     return xml
 

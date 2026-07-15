@@ -79,22 +79,22 @@ $dic = [
 ];
 
 // Keep globals global as requested
-function buildmyinfo($loadjson, $lstype, $lstypestr): array {
+function buildmyinfo($newlist, $lstype, $lstypestr): array {
     global $username;
 
     $st = [
-        "CURRENT"   => [$lstype ? "reading" : "watching", 1],
-        "COMPLETED" => ["completed", 2],
-        "PAUSED"    => ["onhold", 3],
-        "DROPPED"   => ["dropped", 4],
-        "PLANNING"  => [$lstype ? "plantoread" : "plantowatch", 6],
+        $lstype ? "Reading" : "Watching"  => [$lstype ? "reading" : "watching", 1],
+        "Completed" => ["completed", 2],
+        "On-Hold"    => ["onhold", 3],
+        "Dropped"   => ["dropped", 4],
+        $lstype ? "Plan to Read" : "Plan to Watch"  => [$lstype ? "plantoread" : "plantowatch", 6],
     ];
 
     $stats = array_fill(0, 7, 0);
 
-    foreach ($loadjson as $entry) {
+    foreach ($newlist as $entry) {
         global $dic;
-        $status = $entry[$dic[$lstype]["j"]["stat"]] ?? null; // e.g. CURRENT/COMPLETED/...
+        $status = $entry[$lstypestr]["stat"] ?? null; // e.g. CURRENT/COMPLETED/...
         if ($status !== null && isset($st[$status])) {
             $stats[$st[$status][1]] += 1;
         }
@@ -104,7 +104,7 @@ function buildmyinfo($loadjson, $lstype, $lstypestr): array {
         "user_id" => "",
         "user_name" => $username,
         "user_export_type" => $lstype + 1,
-        "user_total_" . $lstypestr => count($loadjson),
+        "user_total_" . $lstypestr => count($newlist),
     ];
 
     foreach ($st as $i) {
@@ -129,6 +129,7 @@ function json_to_xml($loadjson): string {
         "0" => "0",
         "CURRENT" => $lstype ? "Reading" : "Watching",
         "COMPLETED" => "Completed",
+        "REPEATING" => "Completed",
         "PAUSED" => "On-Hold",
         "DROPPED" => "Dropped",
         "PLANNING" => $lstype ? "Plan to Read" : "Plan to Watch",
@@ -155,10 +156,11 @@ function json_to_xml($loadjson): string {
 					$newlist[$seenIndex][$lstypestr]["tags"] .= ", ";
 				}
 				$newlist[$seenIndex][$lstypestr]["tags"] .= $tag;
+				array_pop($newlist);
 				continue;
 			}
 
-			$newlist[-1][$lstypestr]["tags"] .= $tag;
+			$newlist[count($newlist)-1][$lstypestr]["tags"] .= $tag;
 		}
 
         foreach ($dic[$lstype]["j"] as $prop => $jsonKey) {
@@ -196,6 +198,10 @@ function json_to_xml($loadjson): string {
                 }
 
             } elseif ($prop === "stat") {
+				if ($propval == "REPEATING")
+					$newlist[count($newlist)-1][$lstypestr]["rew"] = 1;
+				else
+					$newlist[count($newlist)-1][$lstypestr]["rew"] = 0;
                 $newprop = [$prop => $st[$propval] ?? "0"];
 
             } elseif ($prop === "id") {
@@ -231,7 +237,7 @@ function json_to_xml($loadjson): string {
     $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\t\t<myanimelist>\n\t\t\n";
 
     $xml .= "\t\t\t<myinfo>\n";
-    $myinfo = buildmyinfo($loadjson, $lstype, $lstypestr);
+    $myinfo = buildmyinfo($newlist, $lstype, $lstypestr);
     foreach ($myinfo as $prop => $val) {
         $xml .= "\t\t\t\t<{$prop}>{$val}</{$prop}>\n";
     }
